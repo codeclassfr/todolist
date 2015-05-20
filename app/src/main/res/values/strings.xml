@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Todo List</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_todo_detail">Write a todo item</string>
+    <string name="action_add">Add</string>
+    <string name="submit">Submit</string>
+</resources>
