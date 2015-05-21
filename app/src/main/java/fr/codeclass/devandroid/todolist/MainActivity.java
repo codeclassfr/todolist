@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +35,19 @@ public class MainActivity extends AppCompatActivity {
 
         myAdapter = new MyAdapter(this, R.layout.one_todo_item, todoDao.getTodoItemList());
         listView.setAdapter(myAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                TodoItem todoItem = (TodoItem)
+                adapterView.getItemAtPosition(i);
+
+                todoItem.setStatus(
+                        todoItem.getStatus().equals(TodoItem.TodoStatus.Done) ? TodoItem.TodoStatus.Not_Done : TodoItem.TodoStatus.Done);
+
+                listView.invalidateViews();
+            }
+        });
     }
 
     @Override
@@ -66,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
         listView.invalidateViews();
     }
 
+
+
     private class MyAdapter extends ArrayAdapter<TodoItem>{
         private int resourceLayout;
         public MyAdapter(Context context, int resource, List<TodoItem> todoItems) {
@@ -81,7 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
             TextView textView = (TextView) v.findViewById(R.id.todoTextView);
 
-            textView.setText(getItem(position).getText());
+            TodoItem todoItem = getItem(position);
+            textView.setText(todoItem.getText());
+            if(TodoItem.TodoStatus.Done.equals(todoItem.getStatus())){
+                textView.getPaint().setStrikeThruText(true);
+                ImageView imageView = (ImageView) v.findViewById(R.id.checkBoxImageView);
+                imageView.setImageResource(R.drawable.ic_action_checkbox_ok);
+            }
 
             return v;
         }
