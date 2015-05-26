@@ -7,6 +7,10 @@ import android.content.Intent;
  */
 public class TodoItem {
 
+    //constants pour passer les paramètres
+    public static final String ID="TODO_ITEM_ID";
+
+
     private Integer id;
     private String text;
     private TodoStatus status = TodoStatus.Not_Done;

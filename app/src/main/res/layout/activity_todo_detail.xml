@@ -8,18 +8,9 @@
     tools:context="fr.codeclass.devandroid.todolist.TodoDetailActivity">
 
 
-    <EditText
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="100dp"
-        android:id="@+id/editTodo" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:id="@+id/submitButton"
-        android:layout_gravity="center_horizontal" />
-
-
+        android:name="fr.codeclass.devandroid.todolist.EditTodoFragment"
+        android:id="@+id/fragmentEditTodo" />
 </LinearLayout>

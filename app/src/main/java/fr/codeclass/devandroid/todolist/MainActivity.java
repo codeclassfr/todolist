@@ -1,38 +1,27 @@
 package fr.codeclass.devandroid.todolist;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TodoListFragment.TodoListItemClickAction,
+        EditTodoFragment.TextSubmitListener {
 
-    private ListView listView;
-    private MyAdapter myAdapter;
-    private TodoDao todoDao = TodoDao.getInstance();
+    private boolean m2panelsMode=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = (ListView) findViewById(R.id.todoList);
+        m2panelsMode=(getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE);
 
-        myAdapter = new MyAdapter(this, R.layout.one_todo_item, todoDao.getTodoItemList());
-        listView.setAdapter(myAdapter);
     }
 
     @Override
@@ -63,27 +52,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        listView.invalidateViews();
+
     }
 
-    private class MyAdapter extends ArrayAdapter<TodoItem>{
-        private int resourceLayout;
-        public MyAdapter(Context context, int resource, List<TodoItem> todoItems) {
-            super(context, resource, todoItems);
-            this.resourceLayout = resource;
+    @Override
+    public void onTodoListItemClicked(TodoItem todoItem) {
+
+        if(m2panelsMode){
+            EditTodoFragment fragment = (EditTodoFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragmentEditTodo);
+            fragment.updateSelectedTodoItem(todoItem);
+
+        }else {
+            Intent intent = new Intent(this, TodoDetailActivity.class);
+            intent.putExtra(TodoItem.ID, todoItem.getId());
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onTextSubmitted() {
+        if(m2panelsMode){
+            ListView listView = (ListView) this.findViewById(R.id.todoList);
+            listView.invalidateViews();
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-
-            View v = inflater.inflate(resourceLayout, parent, false);
-
-            TextView textView = (TextView) v.findViewById(R.id.todoTextView);
-
-            textView.setText(getItem(position).getText());
-
-            return v;
-        }
     }
 }

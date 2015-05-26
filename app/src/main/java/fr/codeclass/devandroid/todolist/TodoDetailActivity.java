@@ -10,36 +10,26 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-public class TodoDetailActivity extends AppCompatActivity {
+public class TodoDetailActivity extends AppCompatActivity implements EditTodoFragment.TextSubmitListener {
 
-    private EditText editText;
-    private Button submitBtn;
     private TodoDao todoDao = TodoDao.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_detail);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        int id = getIntent().getIntExtra(TodoItem.ID, -1);
+        if(id>-1){
+            EditTodoFragment editTodoFragment = (EditTodoFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragmentEditTodo);
 
-        editText = (EditText) findViewById(R.id.editTodo);
-        submitBtn = (Button) findViewById(R.id.submitButton);
+            editTodoFragment.updateSelectedTodoItem(todoDao.getTodoItemById(id));
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               String s =  editText.getText().toString();
-                if(s!=null && !"".equals(s)){
-                    todoDao.putTodoItem(new TodoItem(s));
-                    finish();
-                }
-            }
-        });
-
-
-    }
+        }
+ }
 
 
     @Override
@@ -63,5 +53,10 @@ public class TodoDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTextSubmitted() {
+        finish();
     }
 }
